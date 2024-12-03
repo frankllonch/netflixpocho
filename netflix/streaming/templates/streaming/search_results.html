@@ -19,8 +19,15 @@
         </a>
         <a href="{% url 'start' %}">
             <img src="{% static 'images/start.png' %}" alt="Start" class="nav-icon">
-        <form action="{% url 'search-movies' %}" method="get">
-            <input type="text" name="q" placeholder="Search movies..." value="{{ query }}" class="search-input">
+        </a>
+        <a href="{% url 'series' %}">
+            <img src="{% static 'images/series.png' %}" alt="Series" class="nav-icon">
+        </a>
+        
+        <!-- Search Form -->
+        <form action="{% url 'search-movies' %}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search movies or series..." value="{{ query }}" class="search-input">
+            <button type="submit" class="search-button">🔍</button>
         </form>
     </header>
 

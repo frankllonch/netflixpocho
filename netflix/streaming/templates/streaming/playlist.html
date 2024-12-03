@@ -31,6 +31,12 @@
                 <img src="{% static 'images/start.png' %}" alt="Start" class="search-icon">
             </button>
         </form>
+
+        <!-- series button -->
+        <form action="{% url 'series' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/series.png' %}" alt="Series" class="search-icon">
+            </button>
     </header>
 
     <!-- Movies Grid -->

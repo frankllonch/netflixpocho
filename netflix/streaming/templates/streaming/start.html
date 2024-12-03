@@ -10,10 +10,9 @@
 </head>
 <body class="start-page">
     <div class="menu">
-        <a href="{% url 'home' %}" class="menu-item">Home</a>
+        <a href="{% url 'home' %}" class="menu-item">Movies</a>
+        <a href="{% url 'series' %}" class="menu-item">Series</a> 
         <a href="{% url 'playlist' %}" class="menu-item">My List</a>
         <a href="{% url 'search-movies' %}" class="menu-item">Search</a>
-        <a href="{% url 'series' %}" class="menu-item">Series</a> <!-- Ensure this matches the 'series' URL name -->
-    </div>
 </body>
 </html>
