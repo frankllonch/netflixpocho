@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Search Results</title>
+</head>
+<body>
+    <header>
+        <h1>Search Results</h1>
+        <a href="{% url 'home' %}">Back to Home</a>
+        <form action="{% url 'search-movies' %}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search movies..." value="{{ query }}" class="search-bar">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </header>
+    <main>
+        <h2>Results for "{{ query }}"</h2>
+        {% if movies %}
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-description">{{ movie.overview|truncatechars:100 }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No movies found matching your query.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

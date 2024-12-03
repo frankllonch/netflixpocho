@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Netflix</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Netflix</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'playlist' %}">Playlist</a>
+        </nav>
+        <form action="{% url 'search-movies' %}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search movies..." value="{{ request.GET.q|default:'' }}" class="search-bar">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </header>
+    <main>
+        <h2>Popular Movies</h2>
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-description">{{ movie.overview|truncatechars:100 }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Netflix</p>
+    </footer>
+</body>
+</html>

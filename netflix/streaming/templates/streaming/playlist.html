@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>My Playlists</title>
+</head>
+<body>
+    <header>
+        <h1>My Playlists</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'playlist' %}">Playlist</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Playlists</h2>
+        <ul>
+            {% for playlist in playlists %}
+            <li>
+                <h3>{{ playlist.name }}</h3>
+                <ul>
+                    {% for movie in playlist.movies.all %}
+                    <li>{{ movie.title }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+    <footer>
+        <p>&copy; 2024 Netflix</p>
+    </footer>
+</body>
+</html>
