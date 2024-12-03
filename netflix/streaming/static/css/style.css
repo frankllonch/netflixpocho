@@ -162,24 +162,20 @@ main {
     -webkit-box-orient: vertical;
 }
 
-
 .add-to-playlist-button {
-    display: inline-block;
-    font-size: 20px;
-    background: transparent;
-    color: white;
+    background: none;
     border: none;
+    font-size: 24px;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-    margin-top: 10px;
+    color: white; /* Default color for unfavorited */
+    transition: color 0.2s ease-in-out;
 }
 
 .add-to-playlist-button.favourited {
-    color: #ffffff; /* Red for favorited movies */
+    color: #e50914; /* Red color for favorited */
 }
 
 .add-to-playlist-button:hover {
-    transform: scale(1.2);
-    color: #e50914;
+    transform: scale(1.2); 
+    color: #e50914; /* Slightly enlarge on hover */
 }
-

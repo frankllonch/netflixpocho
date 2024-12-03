@@ -33,7 +33,11 @@
                     <form action="{% url 'add-to-playlist' movie.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
-                            &#9733;
+                            {% if movie.id in playlists %}
+                            &#9733; <!-- Filled Star -->
+                            {% else %}
+                            &#9734; <!-- Empty Star -->
+                            {% endif %}
                         </button>
                     </form>
                 </div>
