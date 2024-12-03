@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Netflix</title>
+    <title>Netflix Series</title>
 </head>
 <body class="home-page">
     <!-- Search and Playlist Icons -->
@@ -25,32 +25,38 @@
             </button>
         </form>
 
-        <!-- start buttonn -->
+        <!--start button-->
         <form action="{% url 'start' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/start.png' %}" alt="Start" class="search-icon">
             </button>
-        </form>
+
+        <!--movies Button -->
+        <form action="{% url 'home' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/movies.png' %}" alt="Home" class="search-icon">
+            </button>
     </header>
-</body>
-    <!-- Title on top of the grid -->
+
+    <!-- Title for Series Grid -->
     <header class="grid-header">
-         <h1>Films of the Moment</h1>
+        <h1>Series of the Moment</h1>
     </header>
-    <!-- Movies Grid -->
+
+    <!-- Series Grid -->
     <main>
         <div class="movie-grid">
-            {% for movie in movies %}
+            {% for series in movies %}
             <div class="movie-card">
-                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
                 <div class="movie-info">
-                    <h3>{{ movie.title }}</h3>
-                    <p>{{ movie.release_date }}</p>
-                    <p>{{ movie.description|truncatechars:100 }}</p>
-                    <form action="{% url 'add-to-playlist' movie.id %}" method="post">
+                    <h3>{{ series.title }}</h3>
+                    <p>{{ series.release_date }}</p>
+                    <p>{{ series.description|truncatechars:100 }}</p>
+                    <form action="{% url 'add-to-playlist' series.id %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
-                            {% if movie.id in playlists %}
+                        <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
+                            {% if series.id in playlists %}
                             &#9733; <!-- Filled Star -->
                             {% else %}
                             &#9734; <!-- Empty Star -->

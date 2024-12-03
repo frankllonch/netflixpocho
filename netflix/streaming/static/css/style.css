@@ -179,3 +179,175 @@ main {
     transform: scale(1.2); 
     color: #e50914; /* Slightly enlarge on hover */
 }
+
+/* General reset for body */
+body.start-page {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e50914; /* Netflix red */
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+}
+
+/* Styling for the menu */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Styling for each menu item */
+.menu-item {
+    font-size: 12rem; /* Large font size */
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out; /* Smooth transition on hover */
+}
+
+/* Hover effect for menu items */
+.menu-item:hover {
+    color: black; /* Turns black when hovered */
+}
+
+/* Optional: Add a slight zoom effect on hover */
+.menu-item:hover {
+    transform: scale(1.1);
+    color: black;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Body Styling for the Home Page */
+body.home-page {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e50914; /* Netflix Red */
+    color: white;
+    text-align: center;
+}
+
+/* Search Icon Styling */
+.search-header {
+    position: relative;
+    padding: 20px;
+    text-align: center;
+}
+
+.search-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.search-icon {
+    width: 50px;
+    height: 50px; 
+    transition: transform 0.3s ease;
+}
+
+.search-icon-button:hover .search-icon {
+    transform: scale(1.1);
+}
+
+/* Body styling for the search page */
+body.search-page {
+     margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e50914; /* Netflix Red */
+    color: white;
+    text-align: center;
+}
+
+/* Navigation Links Styling */
+.nav-links {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.nav-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Search Container Styling */
+.search-container {
+    transition: transform 0.5s ease;
+}
+
+/* Input Field Styling */
+.search-input {
+    width: 300px;
+    height: 50px;
+    border: 2px solid white;
+    border-radius: 25px;
+    background: transparent;
+    color: white;
+    font-size: 18px;
+    padding: 0 20px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:hover,
+.search-input:focus {
+    width: 400px;
+    border-color: rgb(255, 255, 255);
+}
+
+/* Move Search Bar to the Top on Search */
+body.search-page.submitted .search-container {
+    transform: translateY(-200px);
+}
+
+/* Styling for the grid header */
+.grid-header {
+    margin: 0; /* Remove all default margins */
+    padding: 1px 0; /* Add some spacing from the top and bottom */
+    text-align: left; /* Force alignment to the left */
+    padding-left: 1px; /* Add spacing from the left edge */
+    width: 100%; /* Ensure it spans the full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.grid-header h1 {
+    font-family: Arial, sans-serif; /* Use the same font as the project */
+    font-size: 5rem; /* Adjust font size for emphasis */
+    font-weight: bold; /* Make it bold for a strong impact */
+    text-transform: uppercase;
+    color: white; /* White text for contrast */
+    letter-spacing: 2px; /* Add spacing between letters for a sleek look */
+    border-left: 1px solid #e50914; /* Netflix red vertical line for style */
+    padding-left: 1px; /* Add padding to separate the text from the border */
+    animation: fadeIn 1s ease-in-out; /* Smooth fade-in animation */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

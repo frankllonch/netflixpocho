@@ -8,16 +8,33 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>My Playlist</title>
 </head>
-<body>
-    <header>
-        <h1>My Playlist</h1>
-        <nav>
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'playlist' %}">Playlist</a>
-        </nav>
+<body class="home-page">
+    <!-- Navigation Icons -->
+    <header class="search-header">
+        <!-- Home Button -->
+        <form action="{% url 'home' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/movies.png' %}" alt="Home" class="search-icon">
+            </button>
+        </form>
+
+        <!-- Search Button -->
+        <form action="{% url 'search-movies' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/magnifier.png' %}" alt="Search" class="search-icon">
+            </button>
+        </form>
+
+        <!-- start buttonn -->
+        <form action="{% url 'start' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/start.png' %}" alt="Start" class="search-icon">
+            </button>
+        </form>
     </header>
+
+    <!-- Movies Grid -->
     <main>
-        <h2>Movies in My Playlist</h2>
         <div class="movie-grid">
             {% for movie in playlists.movies.all %}
             <div class="movie-card">
@@ -37,8 +54,5 @@
             {% endfor %}
         </div>
     </main>
-    <footer>
-        <p>&copy; 2024 Netflix</p>
-    </footer>
 </body>
 </html>

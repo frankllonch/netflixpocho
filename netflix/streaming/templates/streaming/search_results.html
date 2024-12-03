@@ -8,17 +8,24 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Search Results</title>
 </head>
-<body>
-    <header>
-        <h1>Search Results</h1>
-        <a href="{% url 'home' %}">Back to Home</a>
-        <form action="{% url 'search-movies' %}" method="get" class="search-form">
-            <input type="text" name="q" placeholder="Search movies..." value="{{ query }}" class="search-bar">
-            <button type="submit" class="search-button">Search</button>
+<body class="search-page">
+    <!-- Navigation Links -->
+    <header class="search-header">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/movies.png' %}" alt="Home" class="nav-icon">
+        </a>
+        <a href="{% url 'playlist' %}">
+            <img src="{% static 'images/library.png' %}" alt="Playlist" class="nav-icon">
+        </a>
+        <a href="{% url 'start' %}">
+            <img src="{% static 'images/start.png' %}" alt="Start" class="nav-icon">
+        <form action="{% url 'search-movies' %}" method="get">
+            <input type="text" name="q" placeholder="Search movies..." value="{{ query }}" class="search-input">
         </form>
     </header>
+
+    <!-- Movie Results -->
     <main>
-        <h2>Results for "{{ query }}"</h2>
         {% if movies %}
         <div class="movie-grid">
             {% for movie in movies %}
@@ -26,22 +33,24 @@
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
                 <div class="movie-info">
                     <h3>{{ movie.title }}</h3>
-                    <p>{{ movie.release_date|date:"Y" }}</p>
+                    <p>{{ movie.release_date }}</p>
                     <p>{{ movie.overview|truncatechars:100 }}</p>
                     <form action="{% url 'add-to-playlist' movie.id %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="add-to-playlist-button">&#9733;</button>
+                        <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
+                            {% if movie.id in playlists %}
+                            &#9733; <!-- Filled Star -->
+                            {% else %}
+                            &#9734; <!-- Empty Star -->
+                            {% endif %}
+                        </button>
                     </form>
                 </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <p>No movies found matching your query.</p>
         {% endif %}
     </main>
-    <footer>
-        <p>&copy; 2024 Netflix</p>
-    </footer>
 </body>
 </html>
