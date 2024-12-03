@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import Movie, Playlist, Recommendation
 from .serializers import MovieSerializer, PlaylistSerializer, RecommendationSerializer
 from django.shortcuts import render
-from .models import Movie, Playlist
+from .models import Movie, Playlist, Series
 import requests
 import random
 from django.conf import settings
@@ -20,10 +20,17 @@ def movie_details(request, movie_id):
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
+def movie_details_page(request, movie_id):
+    try:
+        movie = get_object_or_404(Movie, id=movie_id)
+        print(f"Loaded movie: {movie.title}")
+    except Exception as e:
+        print(f"Error loading movie: {e}")
+    return render(request, "streaming/movie_details.html", {"movie": movie})
 
 def popular_movies(request):
     # Dummy implementation, replace with actual logic
-    movies = Movie.objects.filter(rating__gte=8.0)[:100]
+    movies = Movie.objects.filter(rating__gte=8.0)[:10000]
     serializer = MovieSerializer(movies, many=True)
     return Response(serializer.data)
 
@@ -57,13 +64,43 @@ class MovieDetailView(APIView):
         return Response(serializer.data)
 
 
+def populate_movies():
+    """
+    Fetch and save the top 10000 popular movies from TMDB to the database.
+    """
+    for page in range(1, 20):  # Fetch up to 5 pages of movies (20 movies per page = 1000 movies)
+        api_url = "https://api.themoviedb.org/3/movie/popular"
+        params = {
+            'api_key': settings.TMDB_API_KEY,
+            'language': 'en-US',
+            'page': page,
+        }
+        response = requests.get(api_url, params=params)
+        if response.status_code == 200:
+            popular_movies = response.json().get('results', [])
+            for movie in popular_movies:
+                # Avoid duplicates by using get_or_create
+                Movie.objects.get_or_create(
+                    id=movie['id'],
+                    defaults={
+                        'title': movie.get('title', 'Unknown Title'),
+                        'description': movie.get('overview', 'No description available.'),
+                        'release_date': validate_date(movie.get('first_air_date','')),  # Validate the date
+                        'genre': ', '.join([genre['name'] for genre in movie.get('genres', [])]) if 'genres' in movie else 'Unknown',
+                        'rating': movie.get('vote_average', 0),
+                        'poster_path': movie.get('poster_path', ''),
+                    },
+                )
+        else:
+            print(f"Failed to fetch page {page}. Status code: {response.status_code}")
+
 def home(request):
     # Populate the database if it's empty
-    if Movie.objects.count() < 100:  # Ensure at least 100 movies are in the database
+    if Movie.objects.count() < 10000:  # Ensure at least 1000 movies are in the database
         populate_movies()
 
-    # Fetch the top 100 movies sorted by rating
-    movies = Movie.objects.all().order_by('-rating')[:100]
+    # Fetch the top 1000 movies sorted by rating
+    movies = Movie.objects.all().order_by('-rating')[:10000]
 
     # Fetch IDs of movies in the user's playlist
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
@@ -74,6 +111,7 @@ def home(request):
         'movies': movies,
         'playlists': playlist_movie_ids,  # Pass list of favorited movie IDs
     })
+
 
 def playlist(request):
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
@@ -88,23 +126,37 @@ def movie_details_page(request, movie_id):
 def search_movies(request):
     query = request.GET.get('q', '')  # Get the search term from the request
     movies = []
+    series = []
     if query:
         # TMDB API call to search movies
-        api_url = "https://api.themoviedb.org/3/search/movie"
-        params = {
+        movie_api_url = "https://api.themoviedb.org/3/search/movie"
+        movie_params = {
             'api_key': settings.TMDB_API_KEY,
             'language': 'en-US',
             'query': query,
-            'page': 1,  # Change this for pagination if needed
+            'page': 1,
             'include_adult': False
         }
-        response = requests.get(api_url, params=params)
-        if response.status_code == 200:
-            movies = response.json().get('results', [])  # Extract results from the API
+        movie_response = requests.get(movie_api_url, params=movie_params)
+        if movie_response.status_code == 200:
+            movies = movie_response.json().get('results', [])
 
-    # Pass the movies and the query back to the template
+        # TMDB API call to search series
+        series_api_url = "https://api.themoviedb.org/3/search/tv"
+        series_params = {
+            'api_key': settings.TMDB_API_KEY,
+            'language': 'en-US',
+            'query': query,
+            'page': 1,
+        }
+        series_response = requests.get(series_api_url, params=series_params)
+        if series_response.status_code == 200:
+            series = series_response.json().get('results', [])
+
+    # Pass the movies and series along with the query back to the template
     return render(request, 'streaming/search_results.html', {
         'movies': movies,
+        'series': series,
         'query': query
     })
 
@@ -146,45 +198,29 @@ def add_to_playlist(request, movie_id):
     return redirect('home')  # Redirect back to home
 
 
-def populate_series():
-    """
-    Fetch and save the top 100 popular TV series from TMDB to the database.
-    """
-    for page in range(1, 6):  # Fetch up to 5 pages of TV series (20 per page = 100 series)
-        api_url = "https://api.themoviedb.org/3/tv/popular"
-        params = {
-            'api_key': settings.TMDB_API_KEY,
-            'language': 'en-US',
-            'page': page,
-        }
-        response = requests.get(api_url, params=params)
-        if response.status_code == 200:
-            popular_series = response.json().get('results', [])
-            for series in popular_series:
-                # Default to an empty string if poster_path is missing
-                poster_path = series.get('poster_path', '')
-                Movie.objects.get_or_create(
-                    id=series['id'],
-                    defaults={
-                        'title': series.get('name', 'Unknown Title'),
-                        'description': series.get('overview', 'No description available.'),
-                        'release_date': series.get('first_air_date', 'Unknown Date'),
-                        'genre': ', '.join([genre['name'] for genre in series.get('genres', [])]) if 'genres' in series else 'Unknown',
-                        'rating': series.get('vote_average', 0),
-                        'poster_path': poster_path or '/default-poster.png',  # Provide a default poster path
-                    },
-                )
-        else:
-            print(f"Failed to fetch page {page}. Status code: {response.status_code}")
+
+from django.shortcuts import render
+from datetime import datetime
 
 def start(request):
+    """
+    Render the start page with navigation links.
+    """
     return render(request, 'streaming/start.html')
+
+def validate_date(date_str):
+    try:
+        # Try to parse the date in YYYY-MM-DD format
+        return datetime.strptime(date_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        # Return None if the date is invalid or empty
+        return None
 
 def populate_series():
     """
-    Fetch and save the top 100 popular TV series from TMDB to the database.
+    Fetch and save the top 1000 popular TV series from TMDB to the database.
     """
-    for page in range(1, 6):  # Fetch up to 5 pages of TV series (20 per page = 100 series)
+    for page in range(1, 15):  # Fetch up to 5 pages of TV series (20 per page = 1000 series)
         api_url = "https://api.themoviedb.org/3/tv/popular"
         params = {
             'api_key': settings.TMDB_API_KEY,
@@ -196,30 +232,27 @@ def populate_series():
             popular_series = response.json().get('results', [])
             for series in popular_series:
                 # Avoid duplicates by using get_or_create
-                Movie.objects.get_or_create(
+                Series.objects.get_or_create(
                     id=series['id'],
                     defaults={
-                        'title': series.get('name', 'Unknown Title'),  # `name` is used for series
+                        'title': series.get('name', 'Unknown Title'),
                         'description': series.get('overview', 'No description available.'),
-                        'release_date': series.get('first_air_date', 'Unknown Date'),
-                        'genre': ', '.join([genre['name'] for genre in series.get('genres', [])]) if 'genres' in series else 'Unknown',
+                        'release_date': validate_date(series.get('first_air_date')), 
+                        'genre': ', '.join([str(genre_id) for genre_id in series.get('genre_ids', [])]) if 'genre_ids' in series else 'Unknown',
                         'rating': series.get('vote_average', 0),
-                        'poster_path': series.get('poster_path', ''),
+                        'poster_path':series.get('poster_path', ''),
                     },
                 )
         else:
             print(f"Failed to fetch page {page}. Status code: {response.status_code}")
 
 def home_series(request):
-    """
-    Display the top 100 popular series from the database.
-    """
-    # Populate the database if it's empty
-    if Movie.objects.count() < 100:  # Ensure at least 100 series are in the database
+    # Populate the series database if it's empty
+    if Series.objects.count() < 10000:  # Ensure at least 1000 series are in the database
         populate_series()
 
-    # Fetch the top 100 series sorted by rating
-    series = Movie.objects.all().order_by('-rating')[:100]
+    # Fetch the top 1000 series sorted by rating
+    series = Series.objects.all().order_by('-rating')[:10000]
 
     # Fetch IDs of series in the user's playlist
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
@@ -227,6 +260,7 @@ def home_series(request):
 
     # Render the template with all series and playlist series IDs
     return render(request, 'streaming/home_series.html', {
-        'movies': series,  # Reusing the 'movies' variable for series
-        'playlists': playlist_series_ids,  # Pass list of favorited series IDs
+        'movies': series,  # Reuse 'movies' for template compatibility
+        'playlists': playlist_series_ids,
     })
+

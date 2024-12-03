@@ -89,9 +89,10 @@ main {
 
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust column size */
-    gap: 20px; /* Add spacing between grid items */
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 2fr)); /* Adjust column size */
+    gap: 3px; /* Add spacing between grid items */
+    margin-top: -30px;
+    position: left;
 }
 
 .movie-card {
@@ -352,3 +353,35 @@ body.search-page.submitted .search-container {
         transform: translateX(0);
     }
 }
+
+.movie-card a.movie-link {
+    display: block;
+    z-index: 1; /* Ensure poster is above everything */
+    text-decoration: none;
+}
+
+.movie-card .movie-info {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2; /* Ensure info appears above the poster */
+}
+
+.favorite-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3; /* Ensure favorite button is above everything */
+}
+
+.add-to-playlist-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white; /* Default color for unfavorited */
+    transition: color 0.2s ease-in-out;
+}
+

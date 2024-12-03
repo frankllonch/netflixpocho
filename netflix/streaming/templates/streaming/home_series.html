@@ -9,29 +9,23 @@
     <title>Netflix Series</title>
 </head>
 <body class="home-page">
-    <!-- Search and Playlist Icons -->
+    <!-- Navigation Buttons -->
     <header class="search-header">
-        <!-- Search Button -->
         <form action="{% url 'search-movies' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/magnifier.png' %}" alt="Search" class="search-icon">
             </button>
         </form>
-        
-        <!-- Playlist Button -->
         <form action="{% url 'playlist' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/library.png' %}" alt="Playlist" class="search-icon">
             </button>
         </form>
-
-        <!--start button-->
         <form action="{% url 'start' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/start.png' %}" alt="Start" class="search-icon">
             </button>
-
-        <!-- Home Button -->
+        </form>
         <form action="{% url 'home' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/movies.png' %}" alt="Home" class="search-icon">
@@ -49,21 +43,16 @@
         <div class="movie-grid">
             {% for series in movies %}
             <div class="movie-card">
+                {% if series.poster_path %}
                 <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
+                {% else %}
+                <div class="movie-poster-placeholder">
+                    <h3 class="placeholder-text">{{ series.title }}</h3>
+                </div>
+                {% endif %}
                 <div class="movie-info">
                     <h3>{{ series.title }}</h3>
-                    <p>{{ series.release_date }}</p>
-                    <p>{{ series.description|truncatechars:100 }}</p>
-                    <form action="{% url 'add-to-playlist' series.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
-                            {% if series.id in playlists %}
-                            &#9733; <!-- Filled Star -->
-                            {% else %}
-                            &#9734; <!-- Empty Star -->
-                            {% endif %}
-                        </button>
-                    </form>
+                    <p>{{ Rating.|default:"WATCHe" }}</p>
                 </div>
             </div>
             {% endfor %}

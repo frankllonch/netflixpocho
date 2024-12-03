@@ -25,45 +25,51 @@
             </button>
         </form>
 
-        <!-- start buttonn -->
+        <!-- Start Button -->
         <form action="{% url 'start' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/start.png' %}" alt="Start" class="search-icon">
             </button>
         </form>
 
-        <!-- series button -->
+        <!-- Series Button -->
         <form action="{% url 'series' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/series.png' %}" alt="Series" class="search-icon">
             </button>
+        </form>
     </header>
-</body>
+
     <!-- Title on top of the grid -->
     <header class="grid-header">
-         <h1>Films of the Moment</h1>
+         <h1>FILMS OF THE MOMENT</h1>
     </header>
+
     <!-- Movies Grid -->
     <main>
         <div class="movie-grid">
             {% for movie in movies %}
             <div class="movie-card">
-                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+                <!-- Clickable Poster -->
+                <a href="{% url 'movie-details' movie.id %}" class="movie-link">
+                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+                </a>
                 <div class="movie-info">
                     <h3>{{ movie.title }}</h3>
                     <p>{{ movie.release_date }}</p>
                     <p>{{ movie.description|truncatechars:100 }}</p>
-                    <form action="{% url 'add-to-playlist' movie.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
-                            {% if movie.id in playlists %}
-                            &#9733; <!-- Filled Star -->
-                            {% else %}
-                            &#9734; <!-- Empty Star -->
-                            {% endif %}
-                        </button>
-                    </form>
                 </div>
+                <!-- Favorite Button -->
+                <form action="{% url 'add-to-playlist' movie.id %}" method="post" class="favorite-form" onsubmit="event.stopPropagation();">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
+                        {% if movie.id in playlists %}
+                        &#9733; <!-- Filled Star -->
+                        {% else %}
+                        &#9734; <!-- Empty Star -->
+                        {% endif %}
+                    </button>
+                </form>
             </div>
             {% endfor %}
         </div>

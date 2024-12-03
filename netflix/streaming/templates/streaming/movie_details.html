@@ -10,20 +10,15 @@
 </head>
 <body>
     <header>
-        <h1>{{ movie.title }}</h1>
         <a href="{% url 'home' %}">Back to Home</a>
+        <h1>{{ movie.title }}</h1>
     </header>
     <main>
-        <div class="movie-details">
-            <img src="{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
-            <div class="movie-info">
-                <h2>{{ movie.title }}</h2>
-                <p><strong>Genre:</strong> {{ movie.genre }}</p>
-                <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
-                <p><strong>Rating:</strong> {{ movie.rating }}</p>
-                <p>{{ movie.description }}</p>
-            </div>
-        </div>
+        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+        <p><strong>Genre:</strong> {{ movie.genre }}</p>
+        <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+        <p><strong>Rating:</strong> {{ movie.rating }}</p>
+        <p>{{ movie.description }}</p>
     </main>
 </body>
 </html>
