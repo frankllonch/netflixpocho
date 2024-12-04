@@ -1,3 +1,6 @@
+link al repositorio: [https://github.com/frankllonch/netflixpocho/](https://github.com/frankllonch/netflixpocho/)
+usuario: @frankllonch
+
 # 🎬 Netflix Pocho
 
 Un clon simple y estilizado de Netflix que permite navegar por películas y series, agregar a una lista personalizada y buscar contenido con integración de la API de TMDB.
