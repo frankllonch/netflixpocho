@@ -87,12 +87,147 @@ main {
     padding: 20px;
 }
 
+/* Keyframes for animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+
+/* General reset for body */
+body.start-page {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e50914; /* Netflix red */
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out; /* Fade in animation for the page */
+}
+
+/* Styling for the menu */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Styling for each menu item */
+.menu-item {
+    font-size: 12rem; /* Large font size */
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition on hover */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect for menu items */
+.menu-item:hover {
+    color: black; /* Turns black when hovered */
+}
+
+/* Slide-out animation when clicked */
+.menu-item.slide-out-left {
+    animation: slideOutLeft 0.9s forwards;
+}
+
+.menu-item.slide-out-right {
+    animation: slideOutRight 0.9s forwards;
+}
+
+  /* Slide-left lock animation */
+.menu-item.lock-left {
+    transform: translateX(-80%); /* Slide halfway to the left */
+    transition: transform 0.9s ease-in-out; /* Smooth lock transition */
+}
+
+/* Slide-right lock animation */
+.menu-item.lock-right {
+    transform: translateX(80%); /* Slide halfway to the right */
+    transition: transform 0.9s ease-in-out; /* Smooth lock transition */
+}
+
+/* Keyframes for slide-out-left animation */
+@keyframes slideOutLeft {
+    to {
+        transform: translateX(-100%); /* Slide left */
+        opacity: 0;
+    }
+}
+
+/* Keyframes for slide-out-right animation */
+@keyframes slideOutRight {
+    to {
+        transform: translateX(100%); /* Slide right */
+        opacity: 0;
+    }
+}
+
+/* Body Styling for the Home Page */
+body.home-page {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e50914; /* Netflix Red */
+    color: white;
+    text-align: center;
+    animation: fadeIn 1.5s ease-in-out; /* Fade in effect for home page */
+}
+
+/* Search Icon Styling */
+.search-header {
+    position: relative;
+    padding: 0px;
+    text-align: center;
+    animation: slideIn 1.5s ease-in-out; /* Slide-in animation for the header */
+}
+
+.search-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    animation: hoverPulse 1.5s infinite; /* Pulsing effect on the search button */
+}
+
+.search-icon {
+    width: 300px;
+    height: 100px;
+    transition: transform 0.3s ease;
+}
+
+.search-icon-button:hover .search-icon {
+    transform: scale(1.4); /* Slight enlargement on hover */
+}
+
+/* Styling for the movie grid */
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 2fr)); /* Adjust column size */
     gap: 3px; /* Add spacing between grid items */
     margin-top: -30px;
     position: left;
+    animation: fadeIn 1.5s ease-in-out; /* Fade in animation for the grid */
 }
 
 .movie-card {
@@ -101,16 +236,19 @@ main {
     border-radius: 8px;
     transition: transform 0.3s ease-in-out;
     background-color: #1c1c1e; /* Dark background for each movie card */
+    animation: slideIn 1.5s ease-in-out; /* Slide-in animation for movie cards */
 }
 
 .movie-card:hover {
     transform: scale(1.05); /* Slight zoom on hover */
+    animation: hoverPulse 1s infinite; /* Pulsing effect on hover */
 }
 
 .movie-poster {
     width: 100%;
     display: block;
     border-radius: 8px;
+    transition: transform 0.3s ease; /* Smooth transition on hover */
 }
 
 .movie-info {
@@ -134,6 +272,7 @@ main {
     width: 100%;
     box-sizing: border-box; /* Ensure padding doesn’t affect dimensions */
     overflow: hidden; /* Hide overflowing text */
+    animation: fadeIn 1s ease-in-out; /* Fade-in effect for movie info */
 }
 
 .movie-card:hover .movie-info {
@@ -149,6 +288,7 @@ main {
     text-overflow: ellipsis; /* Add ellipsis if the title is too long */
     white-space: nowrap; /* Ensure the title is on one line */
     width: 100%;
+    animation: slideIn 1s ease-in-out; /* Slide-in effect for title */
 }
 
 .movie-info p {
@@ -161,6 +301,7 @@ main {
     display: -webkit-box;
     -webkit-line-clamp: 3; /* Restrict to 3 lines */
     -webkit-box-orient: vertical;
+    animation: fadeIn 1s ease-in-out; /* Fade-in effect for description */
 }
 
 .add-to-playlist-button {
@@ -169,7 +310,8 @@ main {
     font-size: 24px;
     cursor: pointer;
     color: white; /* Default color for unfavorited */
-    transition: color 0.2s ease-in-out;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    animation: hoverPulse 1s infinite; /* Pulsing effect for the button */
 }
 
 .add-to-playlist-button.favourited {
@@ -179,80 +321,6 @@ main {
 .add-to-playlist-button:hover {
     transform: scale(1.2); 
     color: #e50914; /* Slightly enlarge on hover */
-}
-
-/* General reset for body */
-body.start-page {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #e50914; /* Netflix red */
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-}
-
-/* Styling for the menu */
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Styling for each menu item */
-.menu-item {
-    font-size: 12rem; /* Large font size */
-    color: white;
-    text-decoration: none;
-    transition: color 0.3s ease-in-out; /* Smooth transition on hover */
-}
-
-/* Hover effect for menu items */
-.menu-item:hover {
-    color: black; /* Turns black when hovered */
-}
-
-/* Optional: Add a slight zoom effect on hover */
-.menu-item:hover {
-    transform: scale(1.1);
-    color: black;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Body Styling for the Home Page */
-body.home-page {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #e50914; /* Netflix Red */
-    color: white;
-    text-align: center;
-}
-
-/* Search Icon Styling */
-.search-header {
-    position: relative;
-    padding: 20px;
-    text-align: center;
-}
-
-.search-icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.search-icon {
-    width: 300px;
-    height: 50px; 
-    transition: transform 0.3s ease;
-}
-
-.search-icon-button:hover .search-icon {
-    transform: scale(1.1);
 }
 
 /* Body styling for the search page */
@@ -283,7 +351,7 @@ body.search-page {
 }
 
 .nav-icon:hover {
-    transform: scale(1.1);
+    transform: scale(1.4);
 }
 
 /* Search Container Styling */
@@ -294,13 +362,14 @@ body.search-page {
 /* Input Field Styling */
 .search-input {
     width: 300px;
-    height: 50px;
-    border: 2px solid white;
+    height: 20px;
+    border: 10px solid white;
     border-radius: 25px;
     background: transparent;
     color: white;
     font-size: 18px;
     padding: 0 20px;
+    margin-bottom: 20px;
     outline: none;
     transition: all 0.3s ease;
 }
@@ -311,7 +380,7 @@ body.search-page {
 
 .search-input:hover,
 .search-input:focus {
-    width: 400px;
+    width: 1100px;
     border-color: rgb(255, 255, 255);
 }
 
@@ -319,13 +388,12 @@ body.search-page {
 body.search-page.submitted .search-container {
     transform: translateY(-200px);
 }
-
 /* Styling for the grid header */
 .grid-header {
     margin: 0; /* Remove all default margins */
     padding: 1px 0; /* Add some spacing from the top and bottom */
     text-align: left; /* Force alignment to the left */
-    padding-left: 1px; /* Add spacing from the left edge */
+    padding-left: -10px; /* Add spacing from the left edge */
     width: 100%; /* Ensure it spans the full width */
     box-sizing: border-box; /* Include padding in width calculation */
 }
@@ -336,12 +404,31 @@ body.search-page.submitted .search-container {
     font-weight: bold; /* Make it bold for a strong impact */
     text-transform: uppercase;
     color: white; /* White text for contrast */
-    letter-spacing: 2px; /* Add spacing between letters for a sleek look */
+    letter-spacing: -15px; /* Add spacing between letters for a sleek look */
     border-left: 1px solid #e50914; /* Netflix red vertical line for style */
-    padding-left: 1px; /* Add padding to separate the text from the border */
-    animation: fadeIn 1s ease-in-out; /* Smooth fade-in animation */
+    padding-left: -10px; /* Add padding to separate the text from the border */
+    animation: fadeIn 0.5s ease-in-out; /* Smooth fade-in animation */
+    display: inline-block;
 }
 
+.grid-header h1 span {
+    display: inline-block; /* Each letter is treated as its own block */
+    transition: transform 0.2s ease-in-out; /* Smooth transition for movement */
+}
+
+.grid-header h1 span:hover {
+    transform: translateY(-10px); /* Slide the letter up when hovered */
+}
+
+/* Optional: Add a smooth fade-in animation for the header */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 /* Fade-in animation */
 @keyframes fadeIn {
     from {
@@ -384,4 +471,3 @@ body.search-page.submitted .search-container {
     color: white; /* Default color for unfavorited */
     transition: color 0.2s ease-in-out;
 }
-

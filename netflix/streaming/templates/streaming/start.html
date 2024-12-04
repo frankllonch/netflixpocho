@@ -14,5 +14,31 @@
         <a href="{% url 'series' %}" class="menu-item">Series</a> 
         <a href="{% url 'playlist' %}" class="menu-item">My List</a>
         <a href="{% url 'search-movies' %}" class="menu-item">Search</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+                const menuItems = document.querySelectorAll(".menu-item");
+
+                menuItems.forEach(item => {
+                    item.addEventListener("click", function (e) {
+                        e.preventDefault(); // Prevent immediate navigation
+
+                        // Remove any existing locks
+                        menuItems.forEach(el => el.classList.remove("lock-left", "lock-right"));
+
+                        const direction = Math.random() > 0.5 ? "left" : "right"; // Random slide direction
+                        this.classList.add(`lock-${direction}`); // Add lock class
+
+                        // Delay navigation until the locking animation completes
+                        setTimeout(() => {
+                            window.location.href = this.getAttribute("href"); // Navigate to the link
+                        }, 800); // Match the animation duration
+                    });
+                });
+            });
+    </script>
 </body>
+
+
 </html>

@@ -21,14 +21,14 @@
         <!-- Playlist Button -->
         <form action="{% url 'playlist' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
-                <img src="{% static 'images/library.png' %}" alt="Playlist" class="search-icon">
+                <img src="{% static 'images/notes.png' %}" alt="Playlist" class="search-icon">
             </button>
         </form>
 
         <!-- Start Button -->
         <form action="{% url 'start' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
-                <img src="{% static 'images/start.png' %}" alt="Start" class="search-icon">
+                <img src="{% static 'images/star1.png' %}" alt="Start" class="search-icon">
             </button>
         </form>
 
@@ -42,9 +42,12 @@
 
     <!-- Title on top of the grid -->
     <header class="grid-header">
-         <h1>FILMS OF THE MOMENT</h1>
+        <h1>
+            {% for letter in "Films of the Moment" %}
+            <span>{{ letter }}</span>
+            {% endfor %}
+        </h1>
     </header>
-
     <!-- Movies Grid -->
     <main>
         <div class="movie-grid">
