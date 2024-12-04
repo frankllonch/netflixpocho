@@ -9,10 +9,10 @@
     <title>Login</title>
 </head>
 <body class="auth-page">
-    <header class="fade-in">
+    <header>
         <h1 class="auth-title">Login</h1>
     </header>
-    <main class="fade-in">
+    <main>
         <form method="post" class="auth-form">
             {% csrf_token %}
             {{ form.as_p }}

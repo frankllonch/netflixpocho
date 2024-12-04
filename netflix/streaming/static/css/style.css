@@ -158,13 +158,13 @@ body.start-page {
 
   /* Slide-left lock animation */
 .menu-item.lock-left {
-    transform: translateX(-80%); /* Slide halfway to the left */
+    transform: translateX(-990%); /* Slide halfway to the left */
     transition: transform 0.9s ease-in-out; /* Smooth lock transition */
 }
 
 /* Slide-right lock animation */
 .menu-item.lock-right {
-    transform: translateX(80%); /* Slide halfway to the right */
+    transform: translateX(95%); /* Slide halfway to the right */
     transition: transform 0.9s ease-in-out; /* Smooth lock transition */
 }
 
@@ -470,4 +470,112 @@ body.search-page.submitted .search-container {
     cursor: pointer;
     color: white; /* Default color for unfavorited */
     transition: color 0.2s ease-in-out;
+}
+
+body.auth-page {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content:center; ;
+    align-items: center;
+    background-color: #e50914; /* Netflix red */
+    font-family: Arial, sans-serif;
+    color: rgb(38, 255, 0);
+    text-align: center;
+    animation: fadeInPage 1s ease-in-out;
+}
+
+/* Fade-in animation for the entire page */
+@keyframes fadeInPage {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Title styling */
+.auth-title {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    align-items: left;
+    align-self: left;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Form styling */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.auth-form input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    padding: 7px;
+    border-radius: 20px; /* Flat edges */
+    outline: none;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.auth-form input:focus {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    transform: scale(1.03);
+}
+
+.auth-form .helptext {
+    font-size: 0.8rem; /* Smaller size */
+    color: rgba(255, 255, 255, 0.7); /* Faded text */
+    margin-top: -10px;
+    margin-bottom: 10px;
+    background: none; /* No background box */
+    border: none;
+}
+
+/* Button styling */
+.auth-button {
+    background-color: #b20710; /* Darker Netflix red for buttons */
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 20px; /* Flat edges */
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.auth-button:hover {
+    background-color: #d81f26; /* Slightly lighter red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* Link styling */
+.auth-link {
+    margin-top: 15px;
+    font-size: 1rem;
+}
+
+.auth-link a {
+    color: white;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.auth-link a:hover {
+    color: #ffd700; /* Gold color on hover for links */
 }

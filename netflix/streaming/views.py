@@ -12,6 +12,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.db.models import Q  # For complex queries
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 def validate_date(date_str):
     try:
@@ -115,7 +116,7 @@ def populate_movies():
         else:
             print(f"Failed to fetch page {page}. Status code: {response.status_code}")
 
-
+@login_required
 def home(request):
     # Populate the database if it's empty
     if Movie.objects.count() < 10000:  # Ensure at least 1000 movies are in the database

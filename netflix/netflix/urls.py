@@ -21,5 +21,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('streaming.urls')),  # Include the streaming app's URLs
-    path('auth/', include('authentication.urls')),  # Include the authentication app's URLs
+    path('', include('authentication.urls')),  # Include the authentication app's URLs
 ]
