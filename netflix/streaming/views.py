@@ -116,7 +116,7 @@ def populate_movies():
         else:
             print(f"Failed to fetch page {page}. Status code: {response.status_code}")
 
-@login_required
+
 def home(request):
     # Populate the database if it's empty
     if Movie.objects.count() < 10000:  # Ensure at least 1000 movies are in the database
