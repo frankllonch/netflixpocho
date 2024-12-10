@@ -121,7 +121,7 @@ def populate_movies():
 
 def home(request):
     # Populate the database if it's empty
-    if Movie.objects.count() < 10000:  # Ensure at least 1000 movies are in the database
+    if Movie.objects.count() < 100:  # Ensure at least 1000 movies are in the database
         populate_movies()
 
     # Fetch the top 1000 movies sorted by rating
@@ -222,9 +222,11 @@ def add_to_playlist_movie(request, movie_id):
 
         # Toggle the movie in the playlist
         if movie in playlist.movies.all():
-            playlist.movies.remove(movie)  # Remove from playlist
+            playlist.movies.remove(movie)
+            return redirect('playlist')  # Remove from playlist
         else:
-            playlist.movies.add(movie)  # Add to playlist
+            playlist.movies.add(movie)  
+            return redirect('playlist')# Add to playlist
 
     return redirect("home")  # Redirect back to home
 
@@ -286,27 +288,26 @@ def populate_series():
 
 def home_series(request):
     # Populate the series database if it's empty
-    if (
-        Series.objects.count() < 10000
-    ):  # Ensure at least 1000 series are in the database
+    if Series.objects.count() < 100:  # Adjust threshold as needed
         populate_series()
 
-    # Fetch the top 1000 series sorted by rating
-    series = Series.objects.all().order_by("-rating")[:10000]
+    # Fetch the top series sorted by rating
+    series = Series.objects.all().order_by("-rating")[:100]
 
     # Fetch IDs of series in the user's playlist
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    playlist_series_ids = list(playlist.movies.values_list("id", flat=True))
+    playlist_series_ids = list(playlist.series.values_list("id", flat=True))
 
-    # Render the template with all series and playlist series IDs
+    # Render the template
     return render(
         request,
         "streaming/home_series.html",
         {
-            "movies": series,  # Reuse 'movies' for template compatibility
+            "movies": series,
             "playlists": playlist_series_ids,
         },
     )
+    
 
 def add_to_playlist_series(request, series_id):
     if request.method == "POST":
@@ -314,30 +315,35 @@ def add_to_playlist_series(request, series_id):
         playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
 
         try:
-            # Check if the movie exists in the database
-            series = Movie.objects.get(id=series_id)
-        except Movie.DoesNotExist:
-            # Fetch movie details from TMDB API
+            # Check if the series exists in the database
+            series = Series.objects.get(id=series_id)
+        except Series.DoesNotExist:
+            # Fetch series details from TMDB API
             api_url = f"https://api.themoviedb.org/3/tv/{series_id}"
             params = {"api_key": settings.TMDB_API_KEY, "language": "en-US"}
             response = requests.get(api_url, params=params)
 
             if response.status_code == 200:
                 data = response.json()
-                # Save the movie in the database
+                # Save the series in the database
                 series = Series.objects.create(
-                    description=data["overview"],
-                    genre=", ".join([genre["name"] for genre in data["genres"]]),
-                    rating=data["vote_average"],
-                    poster_path=data["poster_path"],
+                    id=series_id,
+                    title=data["name"],
+                    description=data.get("overview", "No description available."),
+                    release_date=data.get("first_air_date"),
+                    genre=", ".join([genre["name"] for genre in data.get("genres", [])]),
+                    rating=data.get("vote_average", 0),
+                    poster_path=data.get("poster_path", ""),
                 )
             else:
-                return redirect("home")  # Handle API failure
+                return redirect("series")  # Handle API failure
 
-        # Toggle the movie in the playlist
+        # Toggle the series in the playlist
         if series in playlist.series.all():
-            playlist.series.remove(series)  # Remove from playlist
+            playlist.series.remove(series) 
+            return redirect("playlist") # Remove from playlist
         else:
-            playlist.series.add(series)  # Add to playlist
+            playlist.series.add(series) 
+            return redirect("playlist") # Add to playlist
 
-    return redirect("series")  # Redirect back to home
+    return redirect("series")  # Redirect back to series page

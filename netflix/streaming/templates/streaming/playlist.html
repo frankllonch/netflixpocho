@@ -38,7 +38,6 @@
                 <img src="{% static 'images/series.png' %}" alt="Series" class="search-icon">
             </button>
     </header>
-
     <!-- Movies Grid -->
     <main>
         <div class="movie-grid">
@@ -60,7 +59,7 @@
             {% endfor %}
         </div>
     </main>
-    <!--Series grid-->
+    <!-- Series Grid -->
     <main>
         <div class="movie-grid">
             {% for series in playlists.series.all %}

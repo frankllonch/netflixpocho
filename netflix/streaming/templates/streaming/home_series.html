@@ -60,23 +60,23 @@
                 </div>
                 <!--favorite button-->   
                 <form
-                action="{% url 'add-to-playlist-series' series.id %}"
-                method="post"
-                class="favorite-form"
-                onsubmit="event.stopPropagation();"
-              >
+                    action="{% url 'add-to-playlist-series' series.id %}"
+                    method="post"
+                    class="favorite-form"
+                    onsubmit="event.stopPropagation();"
+                >
                 {% csrf_token %}
                 <button
-                  type="submit"
-                  class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}"
+                    type="submit"
+                    class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}"
                 >
-                  {% if series.id in playlists %} &#9733;
-                  <!-- Filled Star -->
-                  {% else %} &#9734;
-                  <!-- Empty Star -->
-                  {% endif %}
+                    {% if series.id in playlists %}
+                    &#9733; <!-- Filled Star -->
+                    {% else %}
+                    &#9734; <!-- Empty Star -->
+                    {% endif %}
                 </button>
-              </form>
+            </form>
             </div>
             {% endfor %}
         </div>
