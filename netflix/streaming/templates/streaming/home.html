@@ -1,113 +1,76 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Netflix</title>
-  </head>
-  <body class="home-page">
-    <!-- Search and Playlist Icons -->
+</head>
+<body class="home-page">
+    <!-- Navigation Header -->
     <header class="search-header">
-      <!-- Search Button -->
-      <form
-        action="{% url 'search-movies' %}"
-        method="get"
-        style="display: inline"
-      >
-        <button type="submit" class="search-icon-button">
-          <img
-            src="{% static 'images/magnifier.png' %}"
-            alt="Search"
-            class="search-icon"
-          />
-        </button>
-      </form>
-
-      <!-- Playlist Button -->
-      <form action="{% url 'playlist' %}" method="get" style="display: inline">
-        <button type="submit" class="search-icon-button">
-          <img
-            src="{% static 'images/notes.png' %}"
-            alt="Playlist"
-            class="search-icon"
-          />
-        </button>
-      </form>
-
-      <!-- Start Button -->
-      <form action="{% url 'start' %}" method="get" style="display: inline">
-        <button type="submit" class="search-icon-button">
-          <img
-            src="{% static 'images/star1.png' %}"
-            alt="Start"
-            class="search-icon"
-          />
-        </button>
-      </form>
-
-      <!-- Series Button -->
-      <form action="{% url 'series' %}" method="get" style="display: inline">
-        <button type="submit" class="search-icon-button">
-          <img
-            src="{% static 'images/series.png' %}"
-            alt="Series"
-            class="search-icon"
-          />
-        </button>
-      </form>
+        <form action="{% url 'search-movies' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/magnifier.png' %}" alt="Search" class="search-icon">
+            </button>
+        </form>
+        <form action="{% url 'playlist' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/notes.png' %}" alt="Playlist" class="search-icon">
+            </button>
+        </form>
+        <form action="{% url 'start' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/star1.png' %}" alt="Start" class="search-icon">
+            </button>
+        </form>
+        <form action="{% url 'series' %}" method="get" style="display: inline;">
+            <button type="submit" class="search-icon-button">
+                <img src="{% static 'images/series.png' %}" alt="Series" class="search-icon">
+            </button>
+        </form>
+        {% if user.is_authenticated %}
+        <a href="{% url 'login' %}" class="profile-name">{{ user.username }}</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="profile-name">Login</a>
+        {% endif %}
     </header>
 
-    <!-- Title on top of the grid -->
+    <!-- Title -->
     <header class="grid-header">
-      <h1>
-        {% for letter in "Movies of the Moment" %}
-        <span>{{ letter }}</span>
-        {% endfor %}
-      </h1>
+        <h1>
+            {% for letter in "Movies of the Moment" %}
+            <span>{{ letter }}</span>
+            {% endfor %}
+        </h1>
     </header>
+
     <!-- Movies Grid -->
     <main>
-      <div class="movie-grid">
-        {% for movie in movies %}
-        <div class="movie-card">
-          <!-- Clickable Poster -->
-          <a href="{% url 'movie-details' movie.id %}" class="movie-link">
-            <img
-              src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
-              alt="{{ movie.title }}"
-              class="movie-poster"
-            />
-          </a>
-          <div class="movie-info">
-            <h3>{{ movie.title }}</h3>
-            <p>{{ movie.release_date }}</p>
-            <p>{{ movie.description|truncatechars:100 }}</p>
-          </div>
-          <!-- Favorite Button -->
-          <form
-            action="{% url 'add-to-playlist-movies' movie.id %}"
-            method="post"
-            class="favorite-form"
-            onsubmit="event.stopPropagation();"
-          >
-            {% csrf_token %}
-            <button
-              type="submit"
-              class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}"
-            >
-              {% if movie.id in playlists %} &#9733;
-              <!-- Filled Star -->
-              {% else %} &#9734;
-              <!-- Empty Star -->
-              {% endif %}
-            </button>
-          </form>
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <a href="{% url 'movie-details' movie.id %}" class="movie-link">
+                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+                </a>
+                <div class="movie-info">
+                    <h3>{{ movie.title }}</h3>
+                    <p>{{ movie.release_date }}</p>
+                    <form action="{% url 'add-to-playlist-movies' movie.id %}" method="post" class="favorite-form">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
+                            {% if movie.id in playlists %}
+                            &#9733;
+                            {% else %}
+                            &#9734;
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-      </div>
     </main>
-  </body>
+</body>
 </html>

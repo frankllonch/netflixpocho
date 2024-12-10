@@ -118,20 +118,20 @@ def populate_movies():
         else:
             print(f"Failed to fetch page {page}. Status code: {response.status_code}")
 
-
+@login_required
 def home(request):
     # Populate the database if it's empty
-    if Movie.objects.count() < 100:  # Ensure at least 1000 movies are in the database
+    if Movie.objects.count() < 1000:  # Ensure at least 1000 movies are in the database
         populate_movies()
 
-    # Fetch the top 1000 movies sorted by rating
-    movies = Movie.objects.all().order_by("-rating")[:10000]
+    # Fetch the top movies sorted by rating
+    movies = Movie.objects.all().order_by("-rating")[:1000]
 
-    # Fetch IDs of movies in the user's playlist
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+    # Get or create the user's playlist
+    playlist, _ = Playlist.objects.get_or_create(user=request.user, name="My Playlist")
     playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
 
-    # Render the template with all movies and playlist movie IDs
+    # Render the template with movies and playlist data
     return render(
         request,
         "streaming/home.html",
@@ -142,8 +142,9 @@ def home(request):
     )
 
 
+@login_required
 def playlist(request):
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+    playlist, _ = Playlist.objects.get_or_create(user=request.user)
     return render(request, "streaming/playlist.html", {"playlists": playlist})
 
 
@@ -218,11 +219,11 @@ def search_movies(request):
     )
     
 
-
+@login_required
 def add_to_playlist_movie(request, movie_id):
     if request.method == "POST":
-        # Get or create the default playlist
-        playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+        # Get or create the user's playlist
+        playlist, _ = Playlist.objects.get_or_create(user=request.user, name="My Playlist")
 
         try:
             # Check if the movie exists in the database
@@ -238,25 +239,26 @@ def add_to_playlist_movie(request, movie_id):
                 # Save the movie in the database
                 movie = Movie.objects.create(
                     id=movie_id,
-                    title=data["title"],
-                    description=data["overview"],
-                    release_date=data["release_date"],
-                    genre=", ".join([genre["name"] for genre in data["genres"]]),
-                    rating=data["vote_average"],
-                    poster_path=data["poster_path"],
+                    title=data.get("title", "Unknown Title"),
+                    description=data.get("overview", ""),
+                    release_date=data.get("release_date", None),
+                    genre=", ".join([genre["name"] for genre in data.get("genres", [])]),
+                    rating=data.get("vote_average", 0),
+                    poster_path=data.get("poster_path", ""),
                 )
             else:
                 return redirect("home")  # Handle API failure
 
         # Toggle the movie in the playlist
         if movie in playlist.movies.all():
-            playlist.movies.remove(movie)
-            return redirect(request.META.get('HTTP_REFERER','playlist'))  # Remove from playlist
+            playlist.movies.remove(movie)  # Remove from playlist
         else:
-            playlist.movies.add(movie)  
-            return redirect(request.META.get('HTTP_REFERER','playlist')) # Add to playlist
+            playlist.movies.add(movie)  # Add to playlist
 
-    return redirect("home")  # Redirect back to home
+        # Redirect back to the referring page
+        return redirect(request.META.get('HTTP_REFERER', 'playlist'))
+
+    return redirect("home")  # Fallback redirect
 
 
 from django.shortcuts import render
@@ -313,34 +315,34 @@ def populate_series():
         else:
             print(f"Failed to fetch page {page}. Status code: {response.status_code}")
 
-
+@login_required
 def home_series(request):
     # Populate the series database if it's empty
-    if Series.objects.count() < 100:  # Adjust threshold as needed
+    if Series.objects.count() < 1000:  # Ensure at least 1000 series are in the database
         populate_series()
 
     # Fetch the top series sorted by rating
-    series = Series.objects.all().order_by("-rating")[:100]
+    series_list = Series.objects.all().order_by("-rating")[:1000]
 
-    # Fetch IDs of series in the user's playlist
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+    # Get or create the user's playlist
+    playlist, _ = Playlist.objects.get_or_create(user=request.user, name="My Playlist")
     playlist_series_ids = list(playlist.series.values_list("id", flat=True))
 
-    # Render the template
+    # Render the template with series and playlist data
     return render(
         request,
         "streaming/home_series.html",
         {
-            "movies": series,
-            "playlists": playlist_series_ids,
+            "series_list": series_list,
+            "playlists": playlist_series_ids,  # Pass list of favorited series IDs
         },
     )
-    
 
+@login_required
 def add_to_playlist_series(request, series_id):
     if request.method == "POST":
-        # Get or create the default playlist
-        playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+        # Get or create the user's playlist
+        playlist, _ = Playlist.objects.get_or_create(user=request.user, name="My Playlist")
 
         try:
             # Check if the series exists in the database
@@ -356,9 +358,9 @@ def add_to_playlist_series(request, series_id):
                 # Save the series in the database
                 series = Series.objects.create(
                     id=series_id,
-                    title=data["name"],
-                    description=data.get("overview", "No description available."),
-                    release_date=data.get("first_air_date"),
+                    title=data.get("name", "Unknown Title"),
+                    description=data.get("overview", ""),
+                    release_date=data.get("first_air_date", None),
                     genre=", ".join([genre["name"] for genre in data.get("genres", [])]),
                     rating=data.get("vote_average", 0),
                     poster_path=data.get("poster_path", ""),
@@ -368,10 +370,11 @@ def add_to_playlist_series(request, series_id):
 
         # Toggle the series in the playlist
         if series in playlist.series.all():
-            playlist.series.remove(series) 
-            return redirect(request.META.get('HTTP_REFERER','playlist')) # Remove from playlist
+            playlist.series.remove(series)  # Remove from playlist
         else:
-            playlist.series.add(series) 
-            return redirect(request.META.get('HTTP_REFERER','playlist')) # Add to playlist
+            playlist.series.add(series)  # Add to playlist
 
-    return redirect("series")  # Redirect back to series page
+        # Redirect back to the referring page
+        return redirect(request.META.get('HTTP_REFERER', 'playlist'))
+
+    return redirect("series")  # Fallback redirect

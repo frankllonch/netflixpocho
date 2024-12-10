@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,7 @@
     <title>Netflix Series</title>
 </head>
 <body class="home-page">
-    <!-- Navigation Buttons -->
+    <!-- Navigation Header -->
     <header class="search-header">
         <form action="{% url 'search-movies' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
@@ -28,55 +27,45 @@
         </form>
         <form action="{% url 'home' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
-                <img src="{% static 'images/movies.png' %}" alt="Home" class="search-icon">
+                <img src="{% static 'images/movies.png' %}" alt="Movies" class="search-icon">
             </button>
         </form>
+        {% if user.is_authenticated %}
+        <a href="{% url 'login' %}" class="profile-name">{{ user.username }}</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="profile-name">Login</a>
+        {% endif %}
     </header>
 
-<!-- Title on top of the grid -->
-<header class="grid-header">
-    <h1>
-        {% for letter in "Series of the Moment" %}
-        <span>{{ letter }}</span>
-        {% endfor %}
-    </h1>
-</header>
+    <!-- Title -->
+    <header class="grid-header">
+        <h1>
+            {% for letter in "Series of the Moment" %}
+            <span>{{ letter }}</span>
+            {% endfor %}
+        </h1>
+    </header>
 
     <!-- Series Grid -->
     <main>
         <div class="movie-grid">
-            {% for series in movies %}
+            {% for series in series_list %}
             <div class="movie-card">
-                {% if series.poster_path %}
                 <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
-                {% else %}
-                <div class="movie-poster-placeholder">
-                    <h3 class="placeholder-text">{{ series.title }}</h3>
-                </div>
-                {% endif %}
                 <div class="movie-info">
                     <h3>{{ series.title }}</h3>
-                    <p>{{ Rating.|default:"WATCHe" }}</p>
+                    <p>{{ series.release_date }}</p>
+                    <form action="{% url 'add-to-playlist-series' series.id %}" method="post" class="favorite-form">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
+                            {% if series.id in playlists %}
+                            &#9733;
+                            {% else %}
+                            &#9734;
+                            {% endif %}
+                        </button>
+                    </form>
                 </div>
-                <!--favorite button-->   
-                <form
-                    action="{% url 'add-to-playlist-series' series.id %}"
-                    method="post"
-                    class="favorite-form"
-                    onsubmit="event.stopPropagation();"
-                >
-                {% csrf_token %}
-                <button
-                    type="submit"
-                    class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}"
-                >
-                    {% if series.id in playlists %}
-                    &#9733; <!-- Filled Star -->
-                    {% else %}
-                    &#9734; <!-- Empty Star -->
-                    {% endif %}
-                </button>
-            </form>
             </div>
             {% endfor %}
         </div>

@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from django import forms
 
 class Movie(models.Model):
     title = models.CharField(max_length=200)
@@ -24,14 +25,18 @@ class Series(models.Model):
         return self.title
 
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class Playlist(models.Model):
-    name = models.CharField(max_length=100)
-    movies = models.ManyToManyField(Movie, related_name="playlists")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="playlists")
+    name = models.CharField(max_length=100, default="My Playlist")
+    movies = models.ManyToManyField("Movie", related_name="playlists", blank=True)
+    series = models.ManyToManyField("Series", related_name="playlists", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    series = models.ManyToManyField(Series, related_name="playlists")
 
     def __str__(self):
-        return self.name
+        return f"{self.user.username}'s Playlist"
 
 
 class Recommendation(models.Model):

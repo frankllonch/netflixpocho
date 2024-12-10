@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,37 +8,38 @@
     <title>My Playlist</title>
 </head>
 <body class="home-page">
-    <!-- Navigation Icons -->
+    <!-- Navigation Header -->
     <header class="search-header">
-        <!-- Home Button -->
         <form action="{% url 'home' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
-                <img src="{% static 'images/movies.png' %}" alt="Home" class="search-icon">
+                <img src="{% static 'images/movies.png' %}" alt="Movies" class="search-icon">
             </button>
         </form>
-
-        <!-- Search Button -->
         <form action="{% url 'search-movies' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/magnifier.png' %}" alt="Search" class="search-icon">
             </button>
         </form>
-
-        <!-- start buttonn -->
         <form action="{% url 'start' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/star1.png' %}" alt="Start" class="search-icon">
             </button>
         </form>
-
-        <!-- series button -->
         <form action="{% url 'series' %}" method="get" style="display: inline;">
             <button type="submit" class="search-icon-button">
                 <img src="{% static 'images/series.png' %}" alt="Series" class="search-icon">
             </button>
+        </form>
+        {% if user.is_authenticated %}
+        <a href="{% url 'login' %}" class="profile-name">{{ user.username }}</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="profile-name">Login</a>
+        {% endif %}
     </header>
-    <!-- Movies Grid -->
+
+    <!-- Playlist Movies -->
     <main>
+        <h2>My Movies</h2>
         <div class="movie-grid">
             {% for movie in playlists.movies.all %}
             <div class="movie-card">
@@ -47,20 +47,19 @@
                 <div class="movie-info">
                     <h3>{{ movie.title }}</h3>
                     <p>{{ movie.release_date|date:"Y" }}</p>
-                    <p>{{ movie.description|truncatechars:100 }}</p>
                     <form action="{% url 'add-to-playlist-movies' movie.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="add-to-playlist-button favourited">
-                            &#9733; <!-- Always show filled star on playlist page -->
+                            &#9733;
                         </button>
                     </form>
                 </div>
             </div>
             {% endfor %}
         </div>
-    </main>
-    <!-- Series Grid -->
-    <main>
+
+        <!-- Playlist Series -->
+        <h2>My Series</h2>
         <div class="movie-grid">
             {% for series in playlists.series.all %}
             <div class="movie-card">
@@ -68,11 +67,10 @@
                 <div class="movie-info">
                     <h3>{{ series.title }}</h3>
                     <p>{{ series.release_date|date:"Y" }}</p>
-                    <p>{{ series.description|truncatechars:100 }}</p>
                     <form action="{% url 'add-to-playlist-series' series.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="add-to-playlist-button favourited">
-                            &#9733; <!-- Always show filled star on playlist page -->
+                            &#9733;
                         </button>
                     </form>
                 </div>
