@@ -49,7 +49,28 @@
                     <h3>{{ movie.title }}</h3>
                     <p>{{ movie.release_date|date:"Y" }}</p>
                     <p>{{ movie.description|truncatechars:100 }}</p>
-                    <form action="{% url 'add-to-playlist' movie.id %}" method="post">
+                    <form action="{% url 'add-to-playlist-movies' movie.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-playlist-button favourited">
+                            &#9733; <!-- Always show filled star on playlist page -->
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <!--Series grid-->
+    <main>
+        <div class="movie-grid">
+            {% for series in playlists.series.all %}
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
+                <div class="movie-info">
+                    <h3>{{ series.title }}</h3>
+                    <p>{{ series.release_date|date:"Y" }}</p>
+                    <p>{{ series.description|truncatechars:100 }}</p>
+                    <form action="{% url 'add-to-playlist-series' series.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="add-to-playlist-button favourited">
                             &#9733; <!-- Always show filled star on playlist page -->

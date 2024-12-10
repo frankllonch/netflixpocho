@@ -14,6 +14,7 @@ from django.db.models import Q  # For complex queries
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 
+
 def validate_date(date_str):
     try:
         # Try to parse the date in YYYY-MM-DD format
@@ -21,6 +22,7 @@ def validate_date(date_str):
     except (ValueError, TypeError):
         # Return None if the date is invalid or empty
         return None
+
 
 # Function-based views
 def movie_details(request, movie_id):
@@ -189,7 +191,7 @@ def search_movies(request):
     )
 
 
-def add_to_playlist(request, movie_id):
+def add_to_playlist_movie(request, movie_id):
     if request.method == "POST":
         # Get or create the default playlist
         playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
@@ -236,7 +238,6 @@ def start(request):
     Render the start page with navigation links.
     """
     return render(request, "streaming/start.html")
-
 
 
 def populate_series():
@@ -306,3 +307,37 @@ def home_series(request):
             "playlists": playlist_series_ids,
         },
     )
+
+def add_to_playlist_series(request, series_id):
+    if request.method == "POST":
+        # Get or create the default playlist
+        playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+
+        try:
+            # Check if the movie exists in the database
+            series = Movie.objects.get(id=series_id)
+        except Movie.DoesNotExist:
+            # Fetch movie details from TMDB API
+            api_url = f"https://api.themoviedb.org/3/tv/{series_id}"
+            params = {"api_key": settings.TMDB_API_KEY, "language": "en-US"}
+            response = requests.get(api_url, params=params)
+
+            if response.status_code == 200:
+                data = response.json()
+                # Save the movie in the database
+                series = Series.objects.create(
+                    description=data["overview"],
+                    genre=", ".join([genre["name"] for genre in data["genres"]]),
+                    rating=data["vote_average"],
+                    poster_path=data["poster_path"],
+                )
+            else:
+                return redirect("home")  # Handle API failure
+
+        # Toggle the movie in the playlist
+        if series in playlist.series.all():
+            playlist.series.remove(series)  # Remove from playlist
+        else:
+            playlist.series.add(series)  # Add to playlist
+
+    return redirect("series")  # Redirect back to home

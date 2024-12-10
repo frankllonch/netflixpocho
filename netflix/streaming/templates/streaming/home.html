@@ -88,7 +88,7 @@
           </div>
           <!-- Favorite Button -->
           <form
-            action="{% url 'add-to-playlist' movie.id %}"
+            action="{% url 'add-to-playlist-movies' movie.id %}"
             method="post"
             class="favorite-form"
             onsubmit="event.stopPropagation();"

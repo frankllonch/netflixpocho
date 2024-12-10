@@ -60,7 +60,7 @@
                 </div>
                 <!--favorite button-->   
                 <form
-                action="{% url 'add-to-playlist' series.id %}"
+                action="{% url 'add-to-playlist-series' series.id %}"
                 method="post"
                 class="favorite-form"
                 onsubmit="event.stopPropagation();"
@@ -70,7 +70,7 @@
                   type="submit"
                   class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}"
                 >
-                  {% if movie.id in playlists %} &#9733;
+                  {% if series.id in playlists %} &#9733;
                   <!-- Filled Star -->
                   {% else %} &#9734;
                   <!-- Empty Star -->
