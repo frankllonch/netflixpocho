@@ -154,11 +154,15 @@ def movie_details_page(request, movie_id):
 
 
 def search_movies(request):
-    query = request.GET.get("q", "")  # Get the search term from the request
+    query = request.GET.get("q", "")
+    category = request.GET.get("category", "movie")  # Default to movies
+    genre_id = request.GET.get("genre", None)  # Get selected genre ID
     movies = []
     series = []
+    genres = []
+
     if query:
-        # TMDB API call to search movies
+        # TMDB API calls to search movies
         movie_api_url = "https://api.themoviedb.org/3/search/movie"
         movie_params = {
             "api_key": settings.TMDB_API_KEY,
@@ -167,7 +171,7 @@ def search_movies(request):
             "page": 1,
             "include_adult": False,
         }
-        movie_response = requests.get(movie_api_url, params=movie_params)
+        movie_response = requests.get(movie_api_url, movie_params)
         if movie_response.status_code == 200:
             movies = movie_response.json().get("results", [])
 
@@ -179,16 +183,40 @@ def search_movies(request):
             "query": query,
             "page": 1,
         }
-        series_response = requests.get(series_api_url, params=series_params)
+        series_response = requests.get(series_api_url, series_params)
         if series_response.status_code == 200:
             series = series_response.json().get("results", [])
 
-    # Pass the movies and series along with the query back to the template
+    # TMDB API call to get genres
+    genre_api_url = f"https://api.themoviedb.org/3/genre/{category}/list"
+    genre_params = {
+        "api_key": settings.TMDB_API_KEY,
+        "language": "en-US",
+    }
+    genre_response = requests.get(genre_api_url, genre_params)
+    if genre_response.status_code == 200:
+        genres = genre_response.json().get("genres", [])
+
+    # Fetch IDs of movies and series in the user's playlist
+    playlist = Playlist.objects.first()  # Assuming a single playlist
+    playlist_movie_ids = playlist.movies.values_list("id", flat=True) if playlist else []
+    playlist_series_ids = playlist.series.values_list("id", flat=True) if playlist else []
+
     return render(
         request,
         "streaming/search_results.html",
-        {"movies": movies, "series": series, "query": query},
+        {
+            "movies": movies,
+            "series": series,
+            "query": query,
+            "category": category,
+            "genres": genres,
+            "selected_genre": genre_id,
+            "playlist_movie_ids": playlist_movie_ids,
+            "playlist_series_ids": playlist_series_ids,
+        },
     )
+    
 
 
 def add_to_playlist_movie(request, movie_id):
@@ -223,10 +251,10 @@ def add_to_playlist_movie(request, movie_id):
         # Toggle the movie in the playlist
         if movie in playlist.movies.all():
             playlist.movies.remove(movie)
-            return redirect('playlist')  # Remove from playlist
+            return redirect(request.META.get('HTTP_REFERER','playlist'))  # Remove from playlist
         else:
             playlist.movies.add(movie)  
-            return redirect('playlist')# Add to playlist
+            return redirect(request.META.get('HTTP_REFERER','playlist')) # Add to playlist
 
     return redirect("home")  # Redirect back to home
 
@@ -341,9 +369,9 @@ def add_to_playlist_series(request, series_id):
         # Toggle the series in the playlist
         if series in playlist.series.all():
             playlist.series.remove(series) 
-            return redirect("playlist") # Remove from playlist
+            return redirect(request.META.get('HTTP_REFERER','playlist')) # Remove from playlist
         else:
             playlist.series.add(series) 
-            return redirect("playlist") # Add to playlist
+            return redirect(request.META.get('HTTP_REFERER','playlist')) # Add to playlist
 
     return redirect("series")  # Redirect back to series page

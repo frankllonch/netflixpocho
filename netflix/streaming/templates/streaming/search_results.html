@@ -23,17 +23,24 @@
         <a href="{% url 'series' %}">
             <img src="{% static 'images/series.png' %}" alt="Series" class="nav-icon">
         </a>
-        
+
         <!-- Search Form -->
         <form action="{% url 'search-movies' %}" method="get" class="search-form">
             <input type="text" name="q" placeholder="Search movies or series..." value="{{ query }}" class="search-input">
             <button type="submit" class="search-button">🔍</button>
+            <!-- Category Filter -->
+            <select name="category" class="search-category">
+                <option value="">All</option>
+                <option value="movies" {% if category == 'movies' %}selected{% endif %}>Movies</option>
+                <option value="series" {% if category == 'series' %}selected{% endif %}>Series</option>
+            </select>
         </form>
     </header>
 
     <!-- Movie Results -->
     <main>
         {% if movies %}
+        <h2>Movies</h2>
         <div class="movie-grid">
             {% for movie in movies %}
             <div class="movie-card">
@@ -42,10 +49,10 @@
                     <h3>{{ movie.title }}</h3>
                     <p>{{ movie.release_date }}</p>
                     <p>{{ movie.overview|truncatechars:100 }}</p>
-                    <form action="{% url 'add-to-playlist' movie.id %}" method="post">
+                    <form action="{% url 'add-to-playlist-movies' movie.id %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
-                            {% if movie.id in playlists %}
+                        <button type="submit" class="add-to-playlist-button {% if movie.id in playlist_movie_ids %}favourited{% endif %}">
+                            {% if movie.id in playlist_movie_ids %}
                             &#9733; <!-- Filled Star -->
                             {% else %}
                             &#9734; <!-- Empty Star -->
@@ -56,7 +63,35 @@
             </div>
             {% endfor %}
         </div>
-        {% else %}
+        {% endif %}
+    </main>
+
+    <!-- Series Results -->
+    <main>
+        {% if series %}
+        <h2>Series</h2>
+        <div class="movie-grid">
+            {% for s in series %}
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ s.poster_path }}" alt="{{ s.title }}" class="movie-poster">
+                <div class="movie-info">
+                    <h3>{{ s.name }}</h3>
+                    <p>{{ s.release_date }}</p>
+                    <p>{{ s.overview|truncatechars:100 }}</p>
+                    <form action="{% url 'add-to-playlist-series' s.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-playlist-button {% if s.id in playlist_series_ids %}favourited{% endif %}">
+                            {% if s.id in playlist_series_ids %}
+                            &#9733; <!-- Filled Star -->
+                            {% else %}
+                            &#9734; <!-- Empty Star -->
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+         {% endfor %}
+        </div>
         {% endif %}
     </main>
 </body>
