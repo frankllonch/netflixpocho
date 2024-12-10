@@ -58,6 +58,25 @@
                     <h3>{{ series.title }}</h3>
                     <p>{{ Rating.|default:"WATCHe" }}</p>
                 </div>
+                <!--favorite button-->   
+                <form
+                action="{% url 'add-to-playlist' series.id %}"
+                method="post"
+                class="favorite-form"
+                onsubmit="event.stopPropagation();"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}"
+                >
+                  {% if movie.id in playlists %} &#9733;
+                  <!-- Filled Star -->
+                  {% else %} &#9734;
+                  <!-- Empty Star -->
+                  {% endif %}
+                </button>
+              </form>
             </div>
             {% endfor %}
         </div>
