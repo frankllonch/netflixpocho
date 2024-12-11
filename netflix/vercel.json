@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "netflix/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "netflix/wsgi.py"
+      }
+    ]
+}
