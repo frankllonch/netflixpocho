@@ -82,14 +82,20 @@ WSGI_HANDLER = "netflix.wsgi.handler"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import environ
+env = environ.Env()
+environ.Env.read_env()  # Assuming you have a .env file where your environment variables are defined
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
