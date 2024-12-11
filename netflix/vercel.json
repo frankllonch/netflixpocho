@@ -1,8 +1,10 @@
 {
+    "version": 2,
     "builds": [
       {
         "src": "netflix/wsgi.py",
-        "use": "@vercel/python"
+        "use": "@vercel/python",
+        "config": { "framework": "django" }
       }
     ],
     "routes": [
@@ -11,4 +13,4 @@
         "dest": "netflix/wsgi.py"
       }
     ]
-}
+  }

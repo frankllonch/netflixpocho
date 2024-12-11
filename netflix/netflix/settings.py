@@ -77,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "netflix.wsgi.application"
+WSGI_HANDLER = "netflix.wsgi.handler"
 
 
 # Database
