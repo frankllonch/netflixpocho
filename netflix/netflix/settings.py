@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 from decouple import config
 
 TMDB_API_KEY = config('TMDB_API_KEY')

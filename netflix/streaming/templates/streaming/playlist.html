@@ -31,9 +31,9 @@
             </button>
         </form>
         {% if user.is_authenticated %}
-        <a href="{% url 'login' %}" class="profile-name">{{ user.username }}</a>
+        <a href="{% url 'start' %}" class="profile-name">{{ user.username }}</a>
         {% else %}
-        <a href="{% url 'login' %}" class="profile-name">Login</a>
+        <a href="{% url 'start' %}" class="profile-name">Login</a>
         {% endif %}
     </header>
 
