@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,18 +83,21 @@ WSGI_HANDLER = "netflix.wsgi.handler"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-import environ
-env = environ.Env()
-environ.Env.read_env()  # Assuming you have a .env file where your environment variables are defined
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+# Read the .env file
+environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
-        'USER': 'myuser',
-        'PASSWORD': 'mypassword',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': 'netflixdb',
+        'USER': 'netflixuser',
+        'PASSWORD': '3223',
+        'HOST': '127.0.0.1',  # or 'localhost'
+        'PORT': '5432',
     }
 }
 
