@@ -93,9 +93,9 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'netflixdb',
-        'USER': 'netflixuser',
-        'PASSWORD': '3223',
+        'NAME': 'DB_NAME',
+        'USER': 'DB_USER',
+        'PASSWORD': 'DB_PASSWORD',
         'HOST': '127.0.0.1',  # or 'localhost'
         'PORT': '5432',
     }
