@@ -54,7 +54,7 @@
                 <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
                 <div class="movie-info">
                     <h3>{{ series.title }}</h3>
-                    <p>{{ series.release_date }}</p>
+                    <p>{{ series.description }}</p>
                     <form action="{% url 'add-to-playlist-series' series.id %}" method="post" class="favorite-form">
                         {% csrf_token %}
                         <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">

@@ -56,7 +56,7 @@
                 </a>
                 <div class="movie-info">
                     <h3>{{ movie.title }}</h3>
-                    <p>{{ movie.release_date }}</p>
+                    <p>{{ movie.description }}</p>
                     <form action="{% url 'add-to-playlist-movies' movie.id %}" method="post" class="favorite-form">
                         {% csrf_token %}
                         <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
