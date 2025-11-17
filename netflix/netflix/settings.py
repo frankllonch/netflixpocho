@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
+print("💬 DEBUG ENV: DB_NAME =", os.getenv("DB_NAME"))
+
 from pathlib import Path
 import os
 
@@ -83,6 +86,7 @@ WSGI_HANDLER = "netflix.wsgi.handler"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 import environ
+import os
 env = environ.Env()
 environ.Env.read_env()  # Assuming you have a .env file where your environment variables are defined
 
